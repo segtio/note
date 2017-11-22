@@ -1,0 +1,87 @@
+<div ng-if="messages.error" role="alert" class="alert alert-danger">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+    <div ng-repeat="error in messages.error">{{error.msg}}</div>
+</div>
+<div ng-if="messages.success" role="alert" class="alert alert-success">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">×</a>
+    <div ng-repeat="success in messages.success">{{success.msg}}</div>
+</div>
+<div class="container app">
+    <div class="row app-one">
+        <!-- Conversation Start -->
+        <div class="col-sm-12 conversation">
+            <!-- Heading -->
+            <div class="row heading">
+                <div class="col-sm-2 col-xs-2 heading-name">
+                    <a href="/" class="heading-name-meta">
+                        <i class="fa fa-chevron-left"></i>
+                    </a>
+                </div>
+                <div class="col-sm-2 col-xs-2 heading-name">
+                    <a class="heading-name-meta">
+                        {{currentClient.name}}
+                    </a>
+                </div>
+                <div class="col-sm-3 col-xs-3 heading-name">
+                    <div ng-mouseleave="hidePickaDate()" ng-mouseover="showPickaDate()" id="pickadate-container"
+                         class="form-group has-feedback">
+                        <input ng-model="filterNote.created_at" type="text" class="form-control" name="searchText"
+                               placeholder="Search by date">
+                        <span class="fa fa-calendar form-control-feedback"></span>
+                        <div ng-click="setFilterDate()" class="pickadate-container" pickadate ng-model="date"
+                             min-date="minDate"></div>
+
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-4  heading-dot pull-right">
+                    <div class="form-group has-feedback">
+                        <input ng-model="filterNote.text" type="text" class="form-control" name="searchText"
+                               placeholder="Search">
+                        <span class="fa fa-search form-control-feedback"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- Heading End -->
+
+            <!-- Message Box -->
+            <div class="row message" id="conversation">
+
+                <div class="row message-body">
+                    <!--<div class="msg msg-system">
+                        <div class="message message-system"><span class="message-system-body">
+                            <span dir="auto" class="emojitext">12/15/201</span></span>
+                        </div>
+                    </div>-->
+                    <div class="col-sm-12 message-main-sender">
+                        <div ng-repeat="note in notes | filter:filterNote | orderBy : 'created_at' "
+                             class="well well-lg">
+                            {{note.text}}
+                            <span class="message-time pull-right">{{note.created_at | date : 'dd/MM/yyyy HH:mm:ss'}}</span>
+                        </div>
+                    </div>
+                    <!--<div class="msg msg-system">
+                        <div class="message message-system"><span class="message-system-body">
+                            <span dir="auto" class="emojitext">HIER</span></span>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+            <!-- Message Box End -->
+
+            <!-- Reply Box -->
+            <div class="row reply">
+                <div class="col-sm-11 col-xs-11 reply-main">
+                    <textarea ng-model="newMessage" class="form-control" rows="1" id="comment"></textarea>
+                </div>
+                <div class="col-sm-1 col-xs-1 reply-send pull-right">
+                    <a ng-click="addNote()" href="#"><i class="fa fa-floppy-o fa-2x" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <!-- Reply Box End -->
+        </div>
+        <!-- Conversation End -->
+    </div>
+    <!-- App One End -->
+</div>
+
+<!-- App End -->

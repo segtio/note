@@ -10,6 +10,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'pickadate'])
                 controller: 'HomeCtrl',
                 resolve: {loginRequired: loginRequired}
             })
+            .when('/note/:id', {
+                templateUrl: 'partials/note.html',
+                controller: 'NoteCtrl',
+                resolve: {loginRequired: loginRequired}
+            })
             .when('/contact', {
                 templateUrl: 'partials/contact.html',
                 controller: 'ContactCtrl'
@@ -120,24 +125,15 @@ angular.module('MyApp')
   }]);
 
 angular.module('MyApp')
-    .controller('HomeCtrl', ["$scope", "$rootScope", "Client", "Note", function ($scope, $rootScope, Client, Note) {
-        init();
-
+    .controller('HomeCtrl', ["$scope", "$rootScope", "$location", "Client", "Note", function ($scope, $rootScope, $location, Client, Note) {
         function init() {
-            $scope.filterNote = {
-                text: "",
-                created_at: ""
-            };
-            $scope.date = new Date();
-            $scope.minDate = new Date('01/01/2017');
-            $scope.newMessage = "";
             $scope.newClient = "";
             $scope.searchClient = "";
-            $scope.notes = [];
+            $scope.clients = [];
             Client.listClients()
                 .then(function (response) {
                     $scope.clients = response.data.clients;
-                    $scope.listNotes($scope.clients[0].id);
+                    $rootScope.currentClient = response.data.clients[0];
                 })
                 .catch(function (response) {
                     $scope.messages = {
@@ -147,21 +143,7 @@ angular.module('MyApp')
         }
 
         $scope.listNotes = function (id) {
-
-            $scope.currentClient = $scope.clients
-                .filter(function (client) {
-                    return client.id === id;
-                })[0];
-            Note.listNotes(id)
-                .then(function (response) {
-                    $scope.notes = response.data.notes;
-                })
-                .catch(function (response) {
-                    $scope.messages = {
-                        error: Array.isArray(response.data) ? response.data : [response.data]
-                    };
-                });
-
+            $location.path('/note/' + id);
         };
 
         $scope.saveClient = function () {
@@ -182,37 +164,7 @@ angular.module('MyApp')
                     });
             }
         };
-        $scope.addNote = function () {
-            if ($scope.newMessage !== undefined && $scope.newMessage.replace(/\s+/g, "") !== "") {
-                Note.saveNote({text: $scope.newMessage, client_id: $scope.currentClient.id})
-                    .then(function (response) {
-                        $scope.notes.push(response.data.note);
-                        $scope.newMessage = "";
-                        $scope.messages = {
-                            success: [{msg: "Note was successfully added at " + moment(response.data.note.created_at).format('DD/MM/YYYY, H:mm:ss')}]
-                        };
-                    })
-                    .catch(function (response) {
-                        $scope.messages = {
-                            error: Array.isArray(response.data) ? response.data : [response.data]
-                        };
-                    });
-            }
-        };
-
-        $scope.setFilterDate = function () {
-            console.log( moment($scope.date).format('YYYY-MM-DD'));
-            $scope.filterNote.created_at = moment($scope.date).format('YYYY-MM-DD');
-        };
-
-        $scope.showPickaDate = function () {
-            $(".pickadate-container").show();
-        };
-
-        $scope.hidePickaDate = function () {
-            $(".pickadate-container").hide();
-        };
-
+        init();
     }]);
 
 angular.module('MyApp')
@@ -251,6 +203,67 @@ angular.module('MyApp')
         });
     };
   }]);
+angular.module('MyApp')
+    .controller('NoteCtrl', ["$scope", "$rootScope", "$routeParams", "Note", function ($scope, $rootScope, $routeParams, Note) {
+
+        function init() {
+            $scope.filterNote = {
+                text: "",
+                created_at: ""
+            };
+            $scope.date = new Date();
+            $scope.minDate = new Date('01/01/2017');
+            $scope.newMessage = "";
+            $scope.notes = [];
+            $scope.client_id = $routeParams.id;
+            $scope.listNotes($scope.client_id);
+        }
+
+        $scope.listNotes = function (id) {
+            Note.listNotes(id)
+                .then(function (response) {
+                    $scope.notes = response.data.notes;
+                })
+                .catch(function (response) {
+                    $scope.messages = {
+                        error: Array.isArray(response.data) ? response.data : [response.data]
+                    };
+                });
+        };
+
+        $scope.addNote = function () {
+            if ($scope.newMessage !== undefined && $scope.newMessage.replace(/\s+/g, "") !== "") {
+                Note.saveNote({text: $scope.newMessage, client_id: $scope.client_id})
+                    .then(function (response) {
+                        $scope.notes.push(response.data.note);
+                        $scope.newMessage = "";
+                        $scope.messages = {
+                            success: [{msg: "Note was successfully added at " + moment(response.data.note.created_at).format('DD/MM/YYYY, H:mm:ss')}]
+                        };
+                    })
+                    .catch(function (response) {
+                        $scope.messages = {
+                            error: Array.isArray(response.data) ? response.data : [response.data]
+                        };
+                    });
+            }
+        };
+
+        $scope.setFilterDate = function () {
+            console.log(moment($scope.date).format('YYYY-MM-DD'));
+            $scope.filterNote.created_at = moment($scope.date).format('YYYY-MM-DD');
+        };
+
+        $scope.showPickaDate = function () {
+            $(".pickadate-container").show();
+        };
+
+        $scope.hidePickaDate = function () {
+            $(".pickadate-container").hide();
+        };
+        init();
+    }]);
+
 angular.module('MyApp')
   .controller('ProfileCtrl', ["$scope", "$rootScope", "$location", "$window", "$auth", "Account", function($scope, $rootScope, $location, $window, $auth, Account) {
     $scope.profile = $rootScope.currentUser;

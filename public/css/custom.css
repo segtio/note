@@ -634,3 +634,8 @@
     padding: 10px;
     display: none;
 }
+
+.alert{
+    margin-bottom: 0;
+    padding: 10px;
+}

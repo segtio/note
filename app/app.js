@@ -8,6 +8,11 @@ angular.module('MyApp', ['ngRoute', 'satellizer', 'pickadate'])
                 controller: 'HomeCtrl',
                 resolve: {loginRequired: loginRequired}
             })
+            .when('/note/:id', {
+                templateUrl: 'partials/note.html',
+                controller: 'NoteCtrl',
+                resolve: {loginRequired: loginRequired}
+            })
             .when('/contact', {
                 templateUrl: 'partials/contact.html',
                 controller: 'ContactCtrl'
