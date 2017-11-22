@@ -143,6 +143,9 @@ angular.module('MyApp')
         }
 
         $scope.listNotes = function (id) {
+            $rootScope.currentClient = $scope.clients.find(function (client) {
+                return client.id === id;
+            });
             $location.path('/note/' + id);
         };
 
