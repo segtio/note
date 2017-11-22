@@ -1,0 +1,146 @@
+<div class="container app">
+    <div class="row app-one">
+        <div ng-if="messages.error" role="alert" class="alert alert-danger">
+            <div ng-repeat="error in messages.error">{{error.msg}}</div>
+        </div>
+        <div ng-if="messages.success" role="alert" class="alert alert-success">
+            <div ng-repeat="success in messages.success">{{success.msg}}</div>
+        </div>
+        <div class="col-sm-4 side">
+            <div class="side-one">
+                <!-- Heading -->
+                <div class="row heading">
+                    <div class="col-sm-3 col-xs-3 heading-avatar">
+                        <h4>Notes</h4>
+                    </div>
+                    <div class="col-sm-1 col-xs-1  heading-dot  pull-right">
+                        <a data-toggle="modal" data-target="#newClient" href="#">
+                            <i class="fa fa-plus fa-2x  pull-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Heading End -->
+
+                <!-- SearchBox -->
+                <div class="row searchBox">
+                    <div class="col-sm-12 searchBox-inner">
+                        <div class="form-group has-feedback">
+                            <input ng-model="searchClient" type="text" class="form-control" name="searchText"
+                                   placeholder="Search">
+                            <span class="fa fa-search form-control-feedback"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search Box End -->
+                <!-- sideBar -->
+                <div class="row sideBar">
+                    <div ng-click="listNotes(client.id)" ng-repeat="client in clients | filter:searchClient"
+                         class="row sideBar-body">
+                        <div class="col-sm-12 col-xs-12 sideBar-main">
+                            <div class="row">
+                                <div class="col-sm-8 col-xs-8 sideBar-name">
+                                    <span class="name-meta">{{client.name}}</span>
+                                </div>
+                                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
+                                    <a class="pull-right margin-left-10"><i class="fa fa-trash"></i></a>
+                                    <a class="pull-right margin-left-10"><i class="fa fa-pencil"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- Sidebar End -->
+            </div>
+        </div>
+        <!-- New Message Sidebar End -->
+
+        <!-- Conversation Start -->
+        <div class="col-sm-8 conversation">
+            <!-- Heading -->
+            <div class="row heading">
+                <div class="col-sm-3 col-xs-3 heading-name">
+                    <a class="heading-name-meta">
+                        {{currentClient.name}}
+                    </a>
+                </div>
+                <div  class="col-sm-4 col-xs-4 heading-name">
+                    <div ng-mouseleave="hidePickaDate()" ng-mouseover="showPickaDate()" id="pickadate-container" class="form-group has-feedback">
+                        <input ng-model="filterNote.created_at" type="text" class="form-control" name="searchText"
+                               placeholder="Search by date">
+                        <span class="fa fa-calendar form-control-feedback"></span>
+                        <div ng-click="setFilterDate()" class="pickadate-container" pickadate ng-model="date" min-date="minDate"></div>
+
+                    </div>
+                </div>
+                <div class="col-sm-4 col-xs-4  heading-dot pull-right">
+                    <div class="form-group has-feedback">
+                        <input ng-model="filterNote.text" type="text" class="form-control" name="searchText"
+                               placeholder="Search">
+                        <span class="fa fa-search form-control-feedback"></span>
+                    </div>
+                </div>
+            </div>
+            <!-- Heading End -->
+
+            <!-- Message Box -->
+            <div class="row message" id="conversation">
+
+                <div class="row message-body">
+                    <!--<div class="msg msg-system">
+                        <div class="message message-system"><span class="message-system-body">
+                            <span dir="auto" class="emojitext">12/15/201</span></span>
+                        </div>
+                    </div>-->
+                    <div class="col-sm-12 message-main-sender">
+                        <div ng-repeat="note in notes | filter:filterNote | orderBy : '-created_at' "
+                             class="well well-lg">
+                            {{note.text}}
+                            <span class="message-time pull-right">{{note.created_at | date : 'dd/MM/yyyy HH:mm:ss'}}</span>
+                        </div>
+                    </div>
+                    <!--<div class="msg msg-system">
+                        <div class="message message-system"><span class="message-system-body">
+                            <span dir="auto" class="emojitext">HIER</span></span>
+                        </div>
+                    </div>-->
+                </div>
+            </div>
+            <!-- Message Box End -->
+
+            <!-- Reply Box -->
+            <div class="row reply">
+                <div class="col-sm-11 col-xs-11 reply-main">
+                    <textarea ng-model="newMessage" class="form-control" rows="1" id="comment"></textarea>
+                </div>
+                <div class="col-sm-1 col-xs-1 reply-send pull-right">
+                    <a ng-click="addNote()" href="#"><i class="fa fa-floppy-o fa-2x" aria-hidden="true"></i></a>
+                </div>
+            </div>
+            <!-- Reply Box End -->
+        </div>
+        <!-- Conversation End -->
+    </div>
+    <!-- App One End -->
+</div>
+
+<!-- App End -->
+
+<div id="newClient" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add Client</h4>
+            </div>
+            <div class="modal-body">
+
+                <input class="form-control" ng-model="newClient" type="text" placeholder="Client Name">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button ng-click="saveClient()" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
