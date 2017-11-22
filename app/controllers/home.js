@@ -12,11 +12,13 @@ angular.module('MyApp')
             $scope.newMessage = "";
             $scope.newClient = "";
             $scope.searchClient = "";
+            $scope.clients = [];
             $scope.notes = [];
             Client.listClients()
                 .then(function (response) {
                     $scope.clients = response.data.clients;
-                    $scope.listNotes($scope.clients[0].id);
+                    if ($scope.clients.length > 0)
+                        $scope.listNotes($scope.clients[0].id);
                 })
                 .catch(function (response) {
                     $scope.messages = {
@@ -80,7 +82,7 @@ angular.module('MyApp')
         };
 
         $scope.setFilterDate = function () {
-            console.log( moment($scope.date).format('YYYY-MM-DD'));
+            console.log(moment($scope.date).format('YYYY-MM-DD'));
             $scope.filterNote.created_at = moment($scope.date).format('YYYY-MM-DD');
         };
 
