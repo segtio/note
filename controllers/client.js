@@ -21,7 +21,7 @@ exports.saveClient = function (req, res, next) {
 
 exports.allClients = function (req, res, next) {
 
-    new Client({user_id: req.user.id}).fetchAll()
+    Client.where({user_id: req.user.id}).fetchAll()
         .then(function (clients) {
             res.send({clients: clients});
         })
